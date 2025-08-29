@@ -1,46 +1,44 @@
-﻿using System.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using System.Configuration;
 using System.Data.Common;
-
-using Microsoft.Data.SqlClient;
 
 namespace Abstract.Factory
 {
 	internal class SqlServerDatabase : Database
 	{
-		private DbConnection _Connection = null!;
-		private DbCommand _Command = null!;
-
+		private DbConnection _connection = null!;
+		private DbCommand _command = null!;
 
 		public override required DbConnection Connection
 		{
 			get
 			{
-				if (_Connection == null)
+				if (_connection == null)
 				{
 					var connectionString = ConfigurationManager.AppSettings["SqlServerConnectionString"];
-					_Connection = new SqlConnection(connectionString);
+					_connection = new SqlConnection(connectionString);
 				}
 
-				return _Connection;
+				return _connection;
 			}
 
-			set => _Connection = value;
+			set => _connection = value;
 		}
 		public override required DbCommand Command
 		{
 			get
 
 			{
-				if (_Command == null)
+				if (_command == null)
 				{
-					_Command = new SqlCommand();
-					_Command.Connection = Connection;
+					_command = new SqlCommand();
+					_command.Connection = Connection;
 				}
 
-				return _Command;
+				return _command;
 			}
 
-			set => _Command = value;
+			set => _command = value;
 		}
 	}
 }

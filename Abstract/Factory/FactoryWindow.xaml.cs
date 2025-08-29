@@ -1,8 +1,5 @@
-﻿using System.Data.Common;
-using System.Data.OleDb;
+﻿using Abstract.Builder;
 using System.Windows;
-
-using Microsoft.Data.SqlClient;
 
 namespace Abstract.Factory
 {
@@ -18,35 +15,27 @@ namespace Abstract.Factory
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			Database db;
+			var director = new Director();
+			IDatabaseBuilder builder;
 
 			if (rbSqlServer.IsChecked == true)
-			{
-				db = new SqlServerDatabase
-				{
-					Connection = new SqlConnection("your-sqlserver-connection-string"),
-					Command = new SqlCommand() { Connection = new SqlConnection("your-sqlserver-connection-string") }
-				};
-			}
+				builder = new SqlServerDatabaseBuilder();
 			else
-			{
-				db = new OleDBDatabase
-				{
-					Connection = new OleDbConnection("your-oledb-connection-string"),
-					Command = new OleDbCommand() { Connection = new OleDbConnection("your-oledb-connection-string") }
-				};
+				builder = new OleDbDatabaseBuilder();
 
-				DbCommand command = db.Command;
-				// now, we can do something, like:
-				//command.CommandType =
-				//CommandType.Text;
-				//command.CommandText = "SELECT * FROM Customers";
-				//command.Connection.Open();
-				//DbDataReader reader = command.ExecuteReader();
+			director.Build(builder);
+			var database = builder.Database;
 
-				// reader.Close();
-				//command.Connection.Close();
-			}
+			var command = database.Command;
+			// now, we can do something, like:
+			//command.CommandType =
+			//CommandType.Text;
+			//command.CommandText = "SELECT * FROM Customers";
+			//command.Connection.Open();
+			//DbDataReader reader = command.ExecuteReader();
+
+			// reader.Close();
+			//command.Connection.Close();
 		}
 	}
 }
